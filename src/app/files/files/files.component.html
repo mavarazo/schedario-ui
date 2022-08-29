@@ -1,0 +1,36 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">Files</h1>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body table-responsive p-0">
+        <table class="table table-hover text-nowrap">
+          <thead>
+          <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Created</th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-container *ngIf="files$ | async as files; else loading">
+            <tr *ngFor="let file of files" [id]="file.id" [routerLink]="['/files', file.id]">
+              <td>{{ file.id }}</td>
+              <td>{{ file.title }}</td>
+              <td>{{ file.created }}</td>
+            </tr>
+          </ng-container>
+          <ng-template #loading>
+            <tr>
+              <td colspan="3">
+                Loading...
+              </td>
+            </tr></ng-template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

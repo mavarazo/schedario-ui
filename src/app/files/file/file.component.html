@@ -1,0 +1,59 @@
+<ng-container *ngIf="file$ | async as file; else loading">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">{{file.title}}</h1>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="mb-3">
+        <label for="inputPath" class="form-label">Path</label>
+        <input type="text" class="form-control-plaintext" id="inputPath" readonly value="{{file.path}}">
+      </div>
+      <div class="mb-3">
+        <label for="inputCreated" class="form-label">Created</label>
+        <input type="text" class="form-control-plaintext" id="inputCreated" readonly
+               value="{{file.created | date: 'dd.MM.YYYY HH:mm:ss'}}">
+      </div>
+      <div class="mb-3">
+        <label for="inputCreated" class="form-label">Size</label>
+        <input type="text" class="form-control-plaintext" id="inputSize" readonly value="{{file.size | bytes}}">
+      </div>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="mb-3" formGroupName="tagForm">
+          <label for="inputTag" class="form-label">Tags</label>
+          <ng-select id="inputTag"
+                     [items]="tags$ | async"
+                     bindLabel="title"
+                     [addTag]="addTag"
+                     (remove)="onRemoveTag($event)"
+                     [hideSelected]="true"
+                     [multiple]="true"
+                     formControlName="tags">
+          </ng-select>
+        </div>
+        <ng-container formGroupName="fileForm">
+          <div class="mb-3">
+            <label for="inputTitle" class="form-label">Title</label>
+            <input type="text" class="form-control" id="inputTitle" formControlName="title"
+                   [class.is-invalid]="title.touched && title.invalid">
+            <div *ngIf="title.invalid && title.touched">
+              <div *ngIf="title.errors?.['required']" class="d-block invalid-feedback">Please provide a Title.</div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="inputNotes" class="form-label">Notes</label>
+            <textarea class="form-control" id="inputNotes" rows="3" formControlName="notes"></textarea>
+          </div>
+        </ng-container>
+        <button class="btn btn-primary" type="submit" [disabled]="!form.valid">Save</button>
+      </form>
+    </div>
+    <ng-container *ngIf="thumbnail">
+      <div class="col">
+        <img src="{{thumbnail}}" class="card-img-top" alt="Thumbnail of {{file.title}}">
+      </div>
+    </ng-container>
+  </div>
+</ng-container>
+
+<ng-template #loading>Loading...</ng-template>
